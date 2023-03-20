@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
   @override
@@ -11,10 +12,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List<Map<String, String>> datas = [];
+  late int _currentPageIndex ;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _currentPageIndex = 0;
     datas = [{
       "image" : "assets/images/ara-1.jpg",
       "title" : "네메시스 축구화275",
@@ -45,8 +49,37 @@ class _HomeState extends State<Home> {
       "location" : "제주 제주시 아라동2",
       "price" : "5000",
       "like" : "2"
+    },{
+      "image" : "assets/images/ara-6.jpg",
+      "title" : "네메시스 축구화275",
+      "location" : "제주 제주시 아라동",
+      "price" : "3000",
+      "like" : "2"
+    },{
+      "image" : "assets/images/ara-7.jpg",
+      "title" : "네메시스 축구화",
+      "location" : "제주 제주시 아라동2",
+      "price" : "4000",
+      "like" : "2"
+    },{
+      "image" : "assets/images/ara-8.jpg",
+      "title" : "네메시스 축구화33",
+      "location" : "제주 제주시 아라동2",
+      "price" : "5000",
+      "like" : "2"
+    },{
+      "image" : "assets/images/ara-9.jpg",
+      "title" : "네메시스 축구화33",
+      "location" : "제주 제주시 아라동2",
+      "price" : "5000",
+      "like" : "2"
+    },{
+      "image" : "assets/images/ara-10.jpg",
+      "title" : "네메시스 축구화33",
+      "location" : "제주 제주시 아라동2",
+      "price" : "5000",
+      "like" : "2"
     }
-
 
     ];
   }
@@ -146,13 +179,59 @@ class _HomeState extends State<Home> {
             color: const Color(0xff99999999),
           );
         },
-        itemCount: 5);
+        itemCount: 10);
   }
+
+  BottomNavigationBarItem _bottomNavigationBarItem(String iconName, String label){
+    return BottomNavigationBarItem(
+
+        icon: Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child:  SvgPicture.asset("assets/svg/${iconName}_off.svg", width:22),
+        ),
+        activeIcon: Padding(
+          padding: const EdgeInsets.only(bottom:5),
+          child: SvgPicture.asset("assets/svg/${iconName}_on.svg", width:22),
+
+
+        ),
+        label: label,
+    );
+  }
+
+  Widget _bottomNavigationBarwidget(){
+    return BottomNavigationBar(
+      type:BottomNavigationBarType.fixed,
+      onTap:(int index){
+        print(index);
+        setState(() {
+          _currentPageIndex = index ;
+        });
+      },
+        selectedFontSize: 12,
+        currentIndex:_currentPageIndex ,
+        selectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(color: Colors.black),
+        items: [
+
+          _bottomNavigationBarItem("home","홈"),
+          _bottomNavigationBarItem("notes","동네생활"),
+          _bottomNavigationBarItem("location","내 근처"),
+          _bottomNavigationBarItem("chat","채팅"),
+          _bottomNavigationBarItem("user","나의 당근"),
+
+          
+        ]
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appbarWidget() ,
       body: _bodyWidget(),
+      bottomNavigationBar: _bottomNavigationBarwidget(),
     );
   }
 }
