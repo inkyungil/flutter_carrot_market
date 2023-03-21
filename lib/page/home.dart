@@ -1,20 +1,60 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_carrot_market/repository/contents_repository.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 
 import '../utils/data_utils.dart';
 import 'detail.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
 class Home extends StatefulWidget {
-  Home({ Key ? key}) : super(key: key);
-
+  const Home({ Key ? key}) : super(key: key);
   @override
   _HomeState createState() => _HomeState();
 }
 
+
+class Data{
+  String cid;
+  String image;
+  String title;
+  String location;
+  String price;
+  String likes;
+
+  Data(this.cid, this.image, this.title, this.location, this.price, this.likes);
+
+  factory Data.fromJson(dynamic json){
+    return Data(json['cid'] as String, json['image'] as String, json['title'] as String, json['location'] as String, json['price'] as String, json['likes'] as String );
+  }
+
+
+}
+
+
 class _HomeState extends State<Home> {
+
+  var _text = "";
+  final List<Data> _datas = [];
+
+  void _fetchPosts() async{
+    final response = await http.get(Uri.parse("https://propose9898.cafe24.com/_board2/list.php"));
+    _text = utf8.decode(response.bodyBytes);
+    var dataObjsJson = jsonDecode(_text)['ara'] as List;
+    final List<Data> parsedResponse = dataObjsJson.map((dataJson)=>Data.fromJson(dataJson)).toList();
+
+    setState(() {
+      _datas.clear();
+      _datas.addAll(parsedResponse);
+    });
+    print(parsedResponse);
+  }
+
+
   final ContentsRepository contentsRepository = ContentsRepository();
   late String currentLocation;
   final Map<String, String> locationTypeToString = {
@@ -27,6 +67,9 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     currentLocation = "ara";
+
+    _fetchPosts();
+
   }
 
   /*
@@ -47,7 +90,7 @@ class _HomeState extends State<Home> {
           child: Row(
             children: [
               Text(locationTypeToString[currentLocation]?? ""),
-              Icon(Icons.arrow_drop_down),
+              const Icon(Icons.arrow_drop_down),
             ],
           ),
           onSelected: (String value) {
@@ -57,11 +100,11 @@ class _HomeState extends State<Home> {
           },
           itemBuilder: (BuildContext context) {
             return [
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: "ara",
                 child: Text("아라동"),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: "ora",
                 child: Text("오라동"),
               )
@@ -88,14 +131,6 @@ class _HomeState extends State<Home> {
     List<Map<String, String>> responseData =
     await contentsRepository.loadContentsFromLocation(currentLocation);
     return responseData;
-  }
-  static final oCcy = new NumberFormat("#,###", "ko_KR");
-  static String calcStringToWon(String priceString) {
-    if (priceString != null && priceString != "") {
-      return "${oCcy.format(int.parse(priceString))}원";
-    } else {
-      return "- 원";
-    }
   }
 
   Widget _makeDataList(List<Map<String, String>> datas) {
@@ -186,7 +221,7 @@ class _HomeState extends State<Home> {
                 )),
           );
         } else {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
       },
       itemCount: size,

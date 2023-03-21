@@ -1,42 +1,3 @@
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:async';
-import 'dart:convert';
-
-
-class JSONGet extends StatefulWidget {
-  @override
-  _JSONGetState createState() => _JSONGetState();
-}
-
-class _JSONGetState  extends State<JSONGet> {
-
-  late List data;
-
-  Future<String> getData() async {
-    http.Response response = await http.get(
-        Uri.encodeFull('http://jsonplaceholder.typicode.com/posts') as Uri,
-        headers: {"Accept": "application/json"});
-
-    this.setState(() {
-      data = jsonDecode(response.body);
-    });
-
-    print(data);
-
-    return "success";
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
-
-
 class ContentsRepository{
 
 
@@ -210,7 +171,7 @@ class ContentsRepository{
 
   Future<List<Map<String, String>>> loadContentsFromLocation(
       String location) async {
-    await Future.delayed(Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 1000));
     return data[location];
   }
 }
