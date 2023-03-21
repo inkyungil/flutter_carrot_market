@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 import '../utils/data_utils.dart';
+import 'detail.dart';
 
 
 class Home extends StatefulWidget {
@@ -103,9 +104,16 @@ class _HomeState extends State<Home> {
       padding: EdgeInsets.symmetric(horizontal: 15),
       physics: ClampingScrollPhysics(), // bounce 효과를 제거 할 수 있다.
       itemBuilder: (BuildContext context, int index) {
+
         if (datas != null && datas.length > 0) {
           Map<String, String> data = datas[index];
           return GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return DetailContentView(data: data);
+              }));
+            },
+
             child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
@@ -134,18 +142,18 @@ class _HomeState extends State<Home> {
                             Text(
                               data["title"].toString(),
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 15),
+                              style: const TextStyle(fontSize: 15),
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Text(
                               data["location"].toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 12, color: Color(0xff999999)),
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Text(
                               DataUtils.calcStringToWon(data["price"].toString()),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500),
@@ -164,7 +172,7 @@ class _HomeState extends State<Home> {
                                         height: 13,
                                       ),
                                     ),
-                                    SizedBox(width: 3),
+                                    const SizedBox(width: 3),
                                     Text(data["likes"].toString()),
                                   ],
                                 ),
@@ -199,15 +207,15 @@ class _HomeState extends State<Home> {
       future: _loadContents(),
       builder: (context, dynamic snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return Center(child: Text("데이터 오류"));
+          return const Center(child: Text("데이터 오류"));
         }
         if (snapshot.hasData) {
           return _makeDataList(snapshot.data);
         }
-        return Center(child: Text("해당 지역에 데이터가 없습니다."));
+        return const Center(child: Text("해당 지역에 데이터가 없습니다."));
       },
     );
   }
@@ -215,6 +223,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: _appbarWidget(),
       body: _bodyWidget(),
     );
