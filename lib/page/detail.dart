@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class DetailContentView extends StatefulWidget {
@@ -23,6 +24,12 @@ class _DetailContentViewState extends State<DetailContentView> {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      leading: IconButton(
+        onPressed: (){
+          Navigator.pop(context);
+        },
+        icon: Icon(Icons.arrow_back, color: Colors.white,),
+      ),
       actions:[
 
         IconButton(onPressed: () {}, icon: const Icon(Icons.share)),
@@ -35,15 +42,61 @@ class _DetailContentViewState extends State<DetailContentView> {
 
   Widget _bodyWidget() {
       return Container(
-        child: Image.asset(
-          widget.data['image'].toString(),
-          width:size.width,
-          fit:BoxFit.fill,
 
-        ),
+          child: Stack(
+            children: [
+
+              Hero(
+                tag: widget.data["cid"] as String,
+                child: CarouselSlider(
+                options: CarouselOptions(
+                height: size.width,
+                initialPage: 0,
+                enableInfiniteScroll: false,
+                viewportFraction: 1,
+                  onPageChanged: (index, reason){
+                    print(index);
+                  }
+              ),
+
+                  items: List.generate(5, (index) {
+                    return Image.asset(
+                      widget.data["image"].toString(),
+                      width: size.width,
+                      fit: BoxFit.fill,
+                    );
+                  }),
+                ),
+              ),
+
+        ])
 
       );
+
+
+
+
+      //   child: Image.asset(
+      //     widget.data['image'].toString(),
+      //     width:size.width,
+      //     fit:BoxFit.fill,
+      //
+      //   ),
+      // );
+
+
+
   }
+
+
+  Widget _bottomBarwidget() {
+    return Container(
+      width: size.width,
+      height: 55,
+      color: Colors.red,
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +104,8 @@ class _DetailContentViewState extends State<DetailContentView> {
       extendBodyBehindAppBar: true,
       appBar: _appbarWidget(),
       body: _bodyWidget(),
+      bottomNavigationBar: _bottomBarwidget(),
     );
   }
 }
+
